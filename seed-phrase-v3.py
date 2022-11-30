@@ -11,9 +11,6 @@ from web3 import Web3
 # wedding or marriage
 # history or vintage
 
-
-# is in a photoshoot setting
-
 words_first_half = [
     "police",
     "drum",
