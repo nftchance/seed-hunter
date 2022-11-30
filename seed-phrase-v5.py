@@ -61,6 +61,7 @@ words_per_batch = int(12 / len(words))
 counts = []
 combinations = []
 
+players = 3
 its_per_player = 0
 
 w3 = Web3()
@@ -71,14 +72,12 @@ def get_combinations_lazy(counts):
         for j in range(counts[1]):
             yield (i, j)
 
-def generate():
+def generate(its_per_player):
     print("Starting generation...")
 
     attempt = 0
 
     with tqdm(total=its_per_player) as pbar:
-        print('Running simulation...')
-
         for i, j in get_combinations_lazy(counts):
             attempt += 1
             if attempt % 100000 == 0:
@@ -112,9 +111,11 @@ def main():
     # we need to iterate through
     unique_combinations = counts[0] * counts[1]
 
+    its_per_player = int((counts[0] * counts[1]) / players)
+
     print(f'Calculating {unique_combinations} combinations...')
 
-    generate()
+    generate(its_per_player)
 
 if __name__ == '__main__':
     main()
