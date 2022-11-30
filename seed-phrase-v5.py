@@ -1,8 +1,8 @@
 import random
 import sys
-import threading
 import time
 
+from itertools import permutations
 from tqdm import tqdm
 from web3 import Web3
 
@@ -27,7 +27,8 @@ words_first_half = [
     "history",
     "image",
     "gaze",
-    "obey"
+    "obey",
+    "couple",
 ]
 
 # 4/6
@@ -64,11 +65,18 @@ words_second_half = [
     "curtain",
 ]
 
+# shuffle the two lists
+random.shuffle(words_first_half)
+random.shuffle(words_second_half)
+
+combinations_first_half = list(permutations(words_first_half, 6))
+combinations_second_half = list(permutations(words_second_half, 6))
+
+count_first_half, count_second_half = len(combinations_first_half), len(combinations_second_half)
+
 targetAddress = '0xC399bd88A3471bfD277966Fef8e5110857e827Fc'
 
 time_started = time.time()
-
-global_attempt = 0
 
 w3 = Web3()
 
@@ -78,31 +86,41 @@ def factorial(n):
     else:
         return n * factorial(n - 1)
 
+def get_combinations_lazy():
+    for i in range(count_first_half):
+        for j in range(count_second_half):
+            yield i, j
+
 def main():
-    global global_attempt
+    # get player arg from command line
+    players = 3
+    its_per_player = count_first_half * count_second_half / players
 
-    with tqdm(total=factorial(12)) as pbar:
-        while True:
-            random.shuffle(words_first_half)
-            random.shuffle(words_second_half)
+    attempt = 0
 
-            # create seed phrase of 12 words
-            seed_phrase = " ".join((words_first_half + words_second_half)[:12])
+    print(f'First half: {count_first_half} ({factorial(len(words_first_half))})')
+    print(f'Second half: {count_second_half} ({factorial(len(words_second_half))})')
 
-            global_attempt += 1
+    print('Calculating combinations...')
 
-            if global_attempt % 100000 == 0:
-                pbar.update(global_attempt)
+    combinations = get_combinations_lazy()
 
-            # get address from seed phrase
+    print('Running simulation...')
+
+    with tqdm(total=its_per_player) as pbar:
+        for i, j in combinations:
+            attempt += 1
+            if attempt % 50000 == 0:
+                pbar.update(attempt)
+
+            seed_phrase = ' '.join(combinations_first_half[i] + combinations_second_half[j])
             address = w3.toChecksumAddress(Web3.toHex(Web3.keccak(text=seed_phrase))[-40:])
 
             if address == targetAddress:
-                print(f"Found address in {global_attempt} attempts")
-                print(f"Seed phrase: {seed_phrase}")
-                print(f"Address: {address}")
-                print(f"Time elapsed: {time.time() - time_started}")
-                sys.exit()
+                print(f'Found it! {seed_phrase}')
+                print(f'Attempts: {attempt}')
+                print(f'Time elapsed: {time.time() - time_started}')
+                sys.exit(0)
 
 if __name__ == '__main__':
     main()
