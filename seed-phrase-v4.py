@@ -3,6 +3,7 @@ import sys
 import threading
 import time
 
+from tqdm import tqdm
 from web3 import Web3
 
 # 4/6
@@ -81,26 +82,31 @@ def generate_bip39s():
 
         yield ' '.join(seed)
 
+def factorial(n):
+    if n == 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
 def main():
     global global_attempt
 
-    for bip39 in generate_bip39s():
-        global_attempt += 1
+    with tqdm(total=factorial(12)) as pbar:
+        for bip39 in generate_bip39s():
+            global_attempt += 1
 
-        if global_attempt % 100000 == 0:
-            print('attempted %d in %d seconds' %
-                  (global_attempt, time.time() - time_started))
+            if global_attempt % 100000 == 0:
+                pbar.update(global_attempt)
 
-        try:
-            hex = '0x' + Web3.toHex(Web3.keccak(text=bip39))[24:]
+            try:
+                hex = '0x' + Web3.toHex(Web3.keccak(text=bip39))[24:]
 
-            if hex.lower() == targetAddress:
-                print('found it!')
-                print(bip39)
-                sys.exit(0)
-        except Exception as e:
-            return None
-
+                if hex.lower() == targetAddress:
+                    print('found it!')
+                    print(bip39)
+                    sys.exit(0)
+            except Exception as e:
+                return None
 
 if __name__ == '__main__':
     main()
