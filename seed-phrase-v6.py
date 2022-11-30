@@ -16,30 +16,34 @@ words = [
     "monitor",
     "ladder",
     "board",
-    "man",
     "work",
-    "man",
 ], [
     "pen",
     "trash",
     "suit",
     "garbage",
     "bird",
-    "dog",
-
+    "parrot",
 ], [
     "book",
     "car",
     "space",
     "galaxy",
     "box",
-    "race"
+    "race",
+    "novel",
+    "repeat"
+    "puzzle",
 ], [
     "arrow",
+    "above",
     "castle",
     "tower",
     "city",
     "dragon",
+    "sunset",
+    "flag",
+    "ivory"
 ]
 
 words_per_batch = int(12 / len(words))
