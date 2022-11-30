@@ -2,6 +2,8 @@ import random
 import sys
 import threading
 
+from tqdm import tqdm
+
 from web3 import Web3
 
 # 3/6 
@@ -15,7 +17,7 @@ words_first_half = [
     "police",
     "drum",
     "wedding",
-    "marriage",
+    "marriage",    
     "dress",
     "photo",
     "solider",
@@ -42,6 +44,9 @@ words_first_half = [
     "roof"
     "doll"
     "comic",
+    "gaze",
+    "door",
+    "pottery"
 ]
 
 # 4/6
@@ -83,10 +88,11 @@ words_second_half = [
 
 targetAddress = '0xC399bd88A3471bfD277966Fef8e5110857e827Fc'.lower()
 
+attempts = 500000000
 global_attempt = 0
 
 def generate():
-    while True:
+    for i in tqdm(range(attempts)):
         seed = []
         used = []
         for j in range(6):
