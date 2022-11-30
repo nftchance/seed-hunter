@@ -111,7 +111,7 @@ def main():
         for i, j in combinations:
             attempt += 1
             if attempt % 50000 == 0:
-                pbar.update(attempt)
+                pbar.update(50000)
 
             seed_phrase = ' '.join(combinations_first_half[i] + combinations_second_half[j])
             address = w3.toChecksumAddress(Web3.toHex(Web3.keccak(text=seed_phrase))[-40:])
