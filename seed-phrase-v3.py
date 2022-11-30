@@ -73,9 +73,8 @@ def generate_address(mnemonic):
     # generate the address from the seed phrase
         try:
             hex = '0x' + Web3.toHex(Web3.keccak(text=mnemonic))[24:]
-            wallet = Web3.toChecksumAddress(hex)
 
-            return wallet.lower()
+            return hex.lower()
         except Exception as e:
             return None
 
