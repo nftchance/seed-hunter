@@ -124,7 +124,7 @@ def generate():
         global global_attempt
         global_attempt += 1
 
-        if global_attempt % 1000 == 0:
+        if global_attempt % 100000 == 0:
             print('attempt: ' + str(global_attempt))
 
 
