@@ -2,8 +2,6 @@ import random
 import sys
 import threading
 
-from tqdm import tqdm
-
 from web3 import Web3
 
 # 3/6 
@@ -88,11 +86,10 @@ words_second_half = [
 
 targetAddress = '0xC399bd88A3471bfD277966Fef8e5110857e827Fc'.lower()
 
-attempts = 500000000
 global_attempt = 0
 
 def generate():
-    for i in tqdm(range(attempts)):
+    while True:
         seed = []
         used = []
         for j in range(6):
