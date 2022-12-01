@@ -10,48 +10,38 @@ print(f'Preparing seed cracking environment...')
 
 targetAddress = '0xC399bd88A3471bfD277966Fef8e5110857e827Fc'
 
+# angry
 words = [
     [
         "police",
-        "drum",
-        "wedding",
-        "marriage",
-        "hat",
-        "vintage",
-        "vocal",
-        "man",
-        "woman",
-        "uniform",
-        "old",
         "history",
-        "image",
-        "gaze",
         "obey",
+        "mad",
+        "whisper",
+        "hat",
+        "oppose",
         "couple",
-    ],
-    [
-        "mirror",
+    ], [
+        "drum",
+        "marriage",
+        "history",
+        "vintage",
+        "wedding",
+        "couple",
+        "hat",
+        "stare",
+        "gaze"
+    ], [
         "window",
-        "frame",
         "light",
-        "brush",
-        "leaf",
-        "scene",
+        "bird",
         "sun",
+        "cloud",
         "sunny",
-        "forest",
-        "mountain",
-        "album",
-        "flower",
-        "escape",
-        "embrace",
-        "picture",
-        "view",
-        "open",
-        "latin",
-        "frame",
-        "market",
-        "curtain",
+        "ocean",
+        "wave",
+        "leaf",
+        "open"
     ]
 ]
 
@@ -69,7 +59,9 @@ def get_combinations_lazy(counts):
     # loop through all the counts that we have
     for i in range(counts[0]):
         for j in range(counts[1]):
-            yield (i, j)
+            for k in range(counts[2]):
+                yield (i, j, k)
+
 
 def generate(its_per_player):
     print("Starting generation...")
@@ -77,14 +69,15 @@ def generate(its_per_player):
     attempt = 0
 
     with tqdm(total=its_per_player) as pbar:
-        for i, j in get_combinations_lazy(counts):
+        for i, j, k in get_combinations_lazy(counts):
             attempt += 1
             if attempt % 100000 == 0:
                 pbar.update(100000)
 
             seed_phrase = ' '.join(
-                combinations[0][i] + 
-                combinations[1][j]
+                combinations[0][i] +
+                combinations[1][j] + 
+                combinations[2][k]
             )
 
             address = w3.toChecksumAddress(
@@ -94,6 +87,7 @@ def generate(its_per_player):
                 print(f'Found it! {seed_phrase}')
                 print(f'Attempts: {attempt}')
                 sys.exit(0)
+
 
 def main():
     print("Aggregating word combinations...")
@@ -108,13 +102,12 @@ def main():
 
     # use the length of combinations to determine the number of combinations
     # we need to iterate through
-    unique_combinations = counts[0] * counts[1]
-
-    its_per_player = int((counts[0] * counts[1]) / players)
+    unique_combinations = counts[0] * counts[1] * counts[2]
 
     print(f'Calculating {unique_combinations} combinations...')
 
-    generate(its_per_player)
+    generate(unique_combinations)
+
 
 if __name__ == '__main__':
     main()
