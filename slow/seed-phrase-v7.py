@@ -14,9 +14,6 @@ private_key = account.privateKey.hex()
 
 print(private_key)
 
-# address
-
 address = account.address
 
 print(address)
-

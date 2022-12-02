@@ -54,7 +54,10 @@ combinations = []
 players = 3
 its_per_player = 0
 
+account_path = "m/44'/60'/0'/0/0"
+
 w3 = Web3()
+w3.eth.account.enable_unaudited_hdwallet_features()
 
 def get_combinations_lazy(counts):
     # loop through all the counts that we have
@@ -73,8 +76,8 @@ def generate(its_per_player):
     with tqdm(total=its_per_player) as pbar:
         for i, j, k, l in get_combinations_lazy(counts):
             attempt += 1
-            if attempt % 100000 == 0:
-                pbar.update(100000)
+            if attempt % 50000 == 0:
+                pbar.update(50000)
 
             seed_phrase = ' '.join(
                 combinations[0][i] +
@@ -83,14 +86,15 @@ def generate(its_per_player):
                 combinations[3][l]
             )
 
-            address = w3.toChecksumAddress(
-                Web3.toHex(Web3.keccak(text=seed_phrase))[-40:])
+            try:
+                account = w3.eth.account.from_mnemonic(seed_phrase, account_path=account_path).address
 
-            if address == targetAddress:
-                print(f'Found it! {seed_phrase}')
-                print(f'Attempts: {attempt}')
-                sys.exit(0)
-
+                if account.address == targetAddress:
+                    print(f'Found it! {seed_phrase}')
+                    print(f'Attempts: {attempt}')
+                    sys.exit(0)
+            except:
+                pass
 
 def main():
     print("Aggregating word combinations...")
